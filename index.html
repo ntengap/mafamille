@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Fonds Famille</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ink:#111;--mut:#777;--line:#e4e4e4;--ok:#0a8a4a;--pen:#d98200;--no:#b5b5b5;--bad:#c0392b}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--ink);max-width:480px;margin:0 auto;padding:0 18px 96px;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0 6px}
+header b{font-size:15px;letter-spacing:.3px}
+header button{background:none;border:0;color:var(--mut);font-size:13px}
+h2{font-size:22px;margin:14px 0 12px}
+.lbl{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.hero{padding:26px 0 14px;text-align:center}
+.big{font-size:68px;font-weight:800;line-height:1.05;letter-spacing:-2px}
+.mid{font-size:30px;font-weight:700;margin-top:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.card{border:2px solid var(--ink);border-radius:16px;padding:14px 16px}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:10px 0 18px}
+.bar i{display:block;height:100%;background:var(--ink)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.row small{display:block;color:var(--mut);margin-top:3px;font-size:13px}
+.row b{font-size:18px}.r{text-align:right}
+.chip{display:inline-block;margin-top:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;color:#fff}
+.chip.ok{background:var(--ok)}.chip.pending{background:var(--pen)}.chip.none,.chip.sent{background:var(--no)}
+.btn{display:block;width:100%;padding:18px;border:0;border-radius:16px;background:var(--ink);color:#fff;font-size:18px;font-weight:700;margin:14px 0}
+.btn.alt{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.btn.sm{display:inline-block;width:auto;padding:10px 16px;font-size:14px;margin:0 0 0 6px;border-radius:12px}
+.btn.bad{background:#fff;color:var(--bad);border:2px solid var(--bad)}
+.btn:disabled{opacity:.4}
+.nav{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px}
+.nav button{background:none;border:2px solid var(--ink);border-radius:12px;width:44px;height:44px;font-size:20px}
+.nav span{font-size:18px;font-weight:700}
+.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:#fff;border-top:1px solid var(--line);padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
+.tabs button{flex:1;background:none;border:0;font-size:22px;padding:4px 0;position:relative;opacity:.35}
+.tabs button.on{opacity:1}
+.tabs button small{display:block;font-size:10px;color:var(--ink);margin-top:2px}
+.badge{position:absolute;top:-2px;right:12%;background:var(--bad);color:#fff;font-size:11px;font-weight:700;border-radius:10px;padding:1px 6px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.tile{border:2px solid var(--line);border-radius:16px;padding:20px 10px;text-align:center;background:#fff;font-size:17px;font-weight:600}
+.tile.on{border-color:var(--ink);background:var(--ink);color:#fff}
+input,textarea{width:100%;padding:16px;border:2px solid var(--line);border-radius:14px;font-size:17px;margin:6px 0;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--ink)}
+textarea.code{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all}
+.step{display:flex;align-items:center;justify-content:center;gap:22px;margin:12px 0}
+.step button{width:56px;height:56px;border-radius:50%;border:2px solid var(--ink);background:#fff;font-size:28px}
+.step b{font-size:48px;min-width:70px;text-align:center}
+.line{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);font-size:17px}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:30px;font-size:14px;z-index:9;max-width:90%;text-align:center}
+.err{color:var(--bad);font-size:14px;margin:4px 0;min-height:18px}
+.note{color:var(--mut);font-size:13px;margin:10px 0}
+.ev{border-left:4px solid var(--ink);padding:4px 0 4px 14px;margin:18px 0}
+.ev small{color:var(--mut)}.ev b{font-size:17px}.ev p{margin:6px 0;font-size:15px}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--mut);margin:6px 0 10px}
+.lg i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:5px;border-radius:2px}
+.sheet{border:2px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0}
+.warn{background:#fff6e5;border:2px solid var(--pen);border-radius:14px;padding:12px 14px;margin:12px 0;font-size:14px}
+.two2{display:grid;grid-template-columns:1fr 72px 72px;gap:8px}
+.gens{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.gen{border:2px solid var(--ink);border-radius:16px;padding:14px 4px;text-align:center}
+.gen .mid{font-size:38px;margin:0}
+.gen .lbl{font-size:11px}
+.dots i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:2px;background:var(--ink)}
+.dots i.h{background:#fff;border:2px solid var(--ink)}
+.rad{display:flex;align-items:center;gap:8px;font-size:15px;margin:8px 0}
+.rad input{width:auto;margin:0}
+</style></head><body>
+<div id="app"></div>
+<script>
+/* ===== Chiffrement (AES-GCM 256, clé dérivée de la passphrase par PBKDF2) ===== */
+const TE=new TextEncoder(),TD=new TextDecoder();
+const b64e=b=>{const u=new Uint8Array(b);let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s)};
+const b64d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+let KEY=null,SALT=null;
+async function derive(pass,salt){const k=await crypto.subtle.importKey('raw',TE.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function seal(o){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},KEY,TE.encode(JSON.stringify(o)));return b64e(iv)+'.'+b64e(ct)}
+async function unseal(s){const p=s.split('.');const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(p[0])},KEY,b64d(p[1]));return JSON.parse(TD.decode(pt))}
+async function hpw(pw,salt){const k=await crypto.subtle.importKey('raw',TE.encode(pw),'PBKDF2',false,['deriveBits']);return b64e(await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:100000,hash:'SHA-256'},k,256))}
+async function mkpw(pw){const s=crypto.getRandomValues(new Uint8Array(16));return {s:b64e(s),h:await hpw(pw,s)}}
+async function chkpw(pw,o){return (await hpw(pw,b64d(o.s)))===o.h}
+const rid=()=>b64e(crypto.getRandomValues(new Uint8Array(6))).replace(/[^A-Za-z0-9]/g,'x');
+
+/* ===== Données ===== */
+let DB=null,LAST=null,DEMO=false,U=null,mode='boot',tab='home',sel=null,toast='',K=0,G=0,OUT=[],lastCode=null,busy=false;
+const MN=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const mk=i=>{const d=new Date(2026,10+i,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
+const ml=k=>{const p=k.split('-');return MN[+p[1]-1]+' '+p[0]};
+const MONTHS=Array.from({length:60},(_,i)=>mk(i));
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:0,maximumFractionDigits:2}).format(n||0);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const now=new Date();
+const curIdx=Math.max(0,Math.min(59,(now.getFullYear()-2026)*12+now.getMonth()-10));
+const V={mi:curIdx,cm:curIdx};
+const mem=id=>DB.members.find(m=>m.id===id);
+const members=()=>DB.members.filter(m=>m.part!==false);
+const allMembers=()=>DB.members;
+const contribs=(m,id)=>DB.contribs.filter(c=>c.m===m&&c.mid===id);
+const stat=(m,id)=>{const a=contribs(m,id);return !a.length?'none':a.some(c=>c.st==='pending')?'pending':'ok'};
+const paid=(m,id)=>contribs(m,id).reduce((s,c)=>s+c.amt,0);
+const collected=()=>DB.contribs.filter(c=>c.st==='ok').reduce((s,c)=>s+c.amt,0);
+const used=()=>DB.events.reduce((s,e)=>s+(+e.amount||0),0);
+const pend=()=>DB.contribs.filter(c=>c.st==='pending');
+const isAdmin=()=>U&&mem(U).admin;
+const shG=()=>DB.shareG==null?DB.share:DB.shareG;
+const pl=(n,a,b)=>n+' '+(n>1?b:a);
+const famTxt=x=>{const p=[];if(x.kids)p.push(pl(x.kids,'enfant','enfants'));if(x.grand)p.push(pl(x.grand,'petit-enfant','petits-enfants'));return p.join(' · ')||'Sans enfant'};
+const cdesc=(k,g)=>{const p=['moi'];if(k)p.push(pl(k,'enfant','enfants'));if(g)p.push(pl(g,'petit-enfant','petits-enfants'));return p.join(' + ')};
+const dots=(n,c)=>{let t='';for(let i=0;i<Math.min(n||0,40);i++)t+=`<i class="${c}"></i>`;return t};
+const LBL={ok:'Reçu',pending:'En attente',none:'Pas encore',sent:'Envoyé'};
+const dirty=()=>{try{return localStorage.getItem('ff.dirty')==='1'}catch(e){return false}};
+
+async function persist(){
+ if(DEMO)return;
+ LAST={v:1,ts:Date.now(),s:b64e(SALT),d:await seal(DB)};
+ try{localStorage.setItem('ff.enc',JSON.stringify(LAST));localStorage.setItem('ff.dirty','1')}catch(e){}
+}
+function publish(){
+ if(DEMO){say('Démo : rien à publier');return}
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(LAST)],{type:'application/json'}));
+ a.download='data.enc.json';document.body.appendChild(a);a.click();a.remove();
+ try{localStorage.setItem('ff.dirty','0')}catch(e){}
+ say('Fichier chiffré téléchargé');
+}
+
+async function boot(){
+ let remote=null,local=null;
+ try{const r=await fetch('data.enc.json',{cache:'no-store'});if(r.ok)remote=await r.json()}catch(e){}
+ try{local=JSON.parse(localStorage.getItem('ff.enc'))}catch(e){}
+ const c=[remote,local].filter(b=>b&&b.s&&b.d);
+ LAST=c.sort((a,b)=>(b.ts||0)-(a.ts||0))[0]||null;
+ mode=LAST?'unlock':'setup';render();
+}
+
+/* ===== Création / déverrouillage ===== */
+function setErr(t){const e=document.getElementById('err');if(e)e.textContent=t||''}
+function setBusy(b,t){busy=b;const x=document.getElementById('go');if(x){x.disabled=b;if(t)x.textContent=b?'…':t}}
+const v=id=>{const e=document.getElementById(id);return e?e.value:''};
+
+async function makeDB(pass,rows,adminIdx,extra){
+ SALT=crypto.getRandomValues(new Uint8Array(16));KEY=await derive(pass,SALT);
+ const ms=[];
+ for(let i=0;i<rows.length;i++)ms.push({id:'m'+(i+1),name:rows[i].name,kids:rows[i].kids,grand:rows[i].grand||0,part:rows[i].part!==false,admin:i===adminIdx,pw:await mkpw(rows[i].pw)});
+ DB=Object.assign({self:20,share:10,shareG:10,members:ms,contribs:[],events:[]},extra||{});
+}
+async function doSetup(){
+ const p1=v('sp1'),p2=v('sp2'),rows=[];
+ if(p1.length<12)return setErr('Passphrase : 12 caractères minimum');
+ if(p1!==p2)return setErr('Les deux passphrases sont différentes');
+ for(let i=0;i<NR;i++){const n=v('sn'+i).trim();
+  if(!n){if(i<5)return setErr('Nom manquant ligne '+(i+1));continue}
+  const k=parseInt(v('sk'+i)||'0',10),g=parseInt(v('sg'+i)||'0',10),w=v('sw'+i),el=document.getElementById('sa'+i),part=el?el.checked!==false:true;
+  if(!(k>=0)||!(g>=0))return setErr('Nombre d\'enfants invalide ligne '+(i+1));
+  if(part&&w.length<4)return setErr('Mot de passe : 4 caractères min. ligne '+(i+1));
+  rows.push({name:n,kids:k,grand:g,part,idx:i,pw:w.length>=4?w:rid()+rid()})}
+ const ai=parseInt((document.querySelector('input[name=adm]:checked')||{}).value||'0',10);
+ const adm=rows.findIndex(r=>r.idx===ai);
+ if(adm<0||!rows[adm].part)return setErr('Le trésorier doit être un membre qui participe');
+ setBusy(true);await makeDB(p1,rows,adm);await persist();setBusy(false);
+ mode='pick';sel=null;render();say('Fonds créé et chiffré ✓');
+}
+async function doDemo(){
+ DEMO=true;setBusy(true);
+ const rows=[['Aïcha',4,3,1],['Bruno',3,2,1],['Chloé',7,5,1],['David',2,0,1],['Emma',0,0,1],['Félix',1,0,0],['Gaëlle',0,0,0]].map(a=>({name:a[0],kids:a[1],grand:a[2],part:!!a[3],pw:'1234'}));
+ await makeDB('demo-demo-demo',rows,0,{contribs:[
+  {id:'d1',m:'2026-11',mid:'m2',kids:2,amt:40,st:'ok'},{id:'d2',m:'2026-11',mid:'m3',kids:3,amt:50,st:'ok'},
+  {id:'d3',m:'2026-11',mid:'m5',kids:0,amt:20,st:'ok'},{id:'d4',m:'2026-11',mid:'m4',kids:1,amt:30,st:'pending'}]});
+ setBusy(false);mode='pick';sel=null;render();
+}
+async function doUnlock(){
+ const p=v('pp');if(!p)return;setErr('');setBusy(true);
+ try{SALT=b64d(LAST.s);KEY=await derive(p,SALT);DB=await unseal(LAST.d);mode='pick';sel=null;setBusy(false);render()}
+ catch(e){KEY=null;setBusy(false,'Déverrouiller');setErr('Passphrase incorrecte')}
+}
+async function doLogin(){
+ const m=mem(sel),pw=v('pw');if(!m||!pw)return;setBusy(true);
+ if(await chkpw(pw,m.pw)){
+  U=sel;tab='home';sel=null;mode='app';K=0;
+  OUT=[];try{const arr=JSON.parse(localStorage.getItem('ff.out')||'[]');
+   for(const c of arr){try{const o=await unseal(c.split('.').slice(1).join('.'));if(o.mid===U)OUT.push(o)}catch(e){}}}catch(e){}
+  render();
+ }else{setBusy(false,'Entrer');setErr('Mot de passe incorrect')}
+}
+
+/* ===== Vues ===== */
+function monthNav(k){return `<div class="nav"><button onclick="act('nav','${k}',-1)">‹</button><span>${ml(MONTHS[V[k]])}</span><button onclick="act('nav','${k}',1)">›</button></div>`}
+
+function vBoot(){return `<div class="hero"><div style="font-size:54px">🛟</div><div class="note">Chargement…</div></div>`}
+
+let NR=5;
+const rowHtml=i=>`<div class="card" style="margin:10px 0"><div class="lbl">Membre ${i+1} · par ordre de naissance</div>
+ <div class="two2"><input id="sn${i}" placeholder="Nom" autocomplete="off"><input id="sk${i}" type="number" inputmode="numeric" min="0" placeholder="Enfants" value="0"><input id="sg${i}" type="number" inputmode="numeric" min="0" placeholder="P-enf." value="0"></div>
+ <input id="sw${i}" type="password" placeholder="Mot de passe de ce membre" autocomplete="new-password">
+ <label class="rad"><input type="checkbox" id="sa${i}" checked> Participe au fonds</label>
+ <label class="rad"><input type="radio" name="adm" value="${i}" ${i===0?'checked':''}> Trésorier (administrateur)</label></div>`;
+function addRow(){const c=document.getElementById('rows');if(c){c.insertAdjacentHTML('beforeend',rowHtml(NR));NR++}}
+function vSetup(){
+ NR=5;let rows='';for(let i=0;i<5;i++)rows+=rowHtml(i);
+ return `<div class="hero" style="padding-bottom:0"><div style="font-size:54px">🛟</div><h2 style="margin:6px 0 0">Créer le fonds</h2></div>
+ <div class="note" style="text-align:center">Tout est chiffré dans le navigateur. Rien de personnel n'est écrit dans le code.</div>
+ <div class="lbl" style="margin-top:18px">Passphrase de la famille</div>
+ <input id="sp1" type="password" placeholder="12 caractères minimum" autocomplete="new-password">
+ <input id="sp2" type="password" placeholder="Répéter la passphrase" autocomplete="new-password">
+ <div id="rows">${rows}</div>
+ <button class="btn alt" onclick="addRow()">+ Ajouter un membre</button>
+ <div class="note">Décochez « Participe au fonds » pour un membre qui n'est pas encore sûr : il reste visible dans la famille et pourra rejoindre plus tard.</div>
+ <div class="err" id="err"></div>
+ <button class="btn" id="go" onclick="doSetup()">Créer le fonds chiffré</button>
+ <button class="btn alt" onclick="doDemo()">Essayer avec des données fictives</button>`;
+}
+
+function vUnlock(){
+ return `<div class="hero"><div style="font-size:54px">🔒</div><h2 style="margin:6px 0 0">Fonds Famille</h2><div class="note">Entrez la passphrase de la famille</div></div>
+ <input id="pp" type="password" placeholder="Passphrase" autocomplete="current-password" onkeydown="if(event.key==='Enter')doUnlock()">
+ <div class="err" id="err"></div><button class="btn" id="go" onclick="doUnlock()">Déverrouiller</button>`;
+}
+
+function vPick(){
+ const t=members().map(m=>`<button class="tile ${sel===m.id?'on':''}" onclick="act('sel','${m.id}')">${esc(m.name)}</button>`).join('');
+ return `<div class="hero" style="padding-bottom:0"><div style="font-size:54px">🛟</div><h2 style="margin:6px 0 0">Qui êtes-vous ?</h2></div>
+ <div class="tiles">${t}</div>
+ ${sel?`<input id="pw" type="password" placeholder="Votre mot de passe" onkeydown="if(event.key==='Enter')doLogin()"><div class="err" id="err"></div><button class="btn" id="go" onclick="doLogin()">Entrer</button>`:''}
+ ${DEMO?'<div class="note" style="text-align:center">Démo : mot de passe 1234</div>':''}`;
+}
+
+function vHome(){
+ const c=collected(),u=used(),a=c-u,pct=c?Math.min(100,Math.round(u/c*100)):0;
+ const days=Math.ceil((new Date(2026,10,1)-now)/864e5);
+ let h=`<div class="hero"><div class="lbl">Disponible</div><div class="big">${eur(a)}</div></div>
+ <div class="two"><div class="card"><div class="lbl">Collecté</div><div class="mid">${eur(c)}</div></div><div class="card"><div class="lbl">Utilisé</div><div class="mid">${eur(u)}</div></div></div>
+ <div class="bar"><i style="width:${pct}%"></i></div>`;
+ if(days>0)h+=`<div class="card" style="text-align:center"><div class="lbl">Début des opérations</div><div class="mid">1er novembre · J-${days}</div></div>`;
+ if(isAdmin()){const n=pend().length;
+  if(dirty())h+=`<div class="warn">Modifications pas encore publiées.<button class="btn sm" onclick="publish()">Publier</button></div>`;
+  h+=`<button class="btn alt" onclick="act('tab','valid')">${n?`✅ ${n} à valider`:'✅ Valider les cotisations'}</button>`}
+ const st=stat(MONTHS[curIdx],U);
+ h+=`<div class="row"><div><b>${ml(MONTHS[curIdx])}</b><small>Ma cotisation</small></div><div class="r"><span class="chip ${st}">${LBL[st]}</span></div></div><button class="btn" onclick="act('tab','pay')">💶 Cotiser</button>`;
+ return h;
+}
+
+function vMembers(){
+ const m=MONTHS[V.mi],ms=members(),exp=ms.length*DB.self;
+ const rec=ms.reduce((s,x)=>s+contribs(m,x.id).filter(c=>c.st==='ok').reduce((a,c)=>a+c.amt,0),0);
+ const pct=Math.min(100,Math.round(rec/exp*100));
+ return `<h2>Membres</h2>${monthNav('mi')}
+ <div class="card"><div class="lbl">Reçu ce mois</div><div class="mid">${eur(rec)} <span style="font-size:16px;color:var(--mut)">/ ${eur(exp)}</span></div></div>
+ <div class="bar"><i style="width:${pct}%"></i></div>`+
+ ms.map(x=>{const st=stat(m,x.id);return `<div class="row"><div><b>${esc(x.name)}</b><small>${famTxt(x)}</small></div><div class="r"><b>${st==='none'?'—':eur(paid(m,x.id))}</b><br><span class="chip ${st}">${LBL[st]}</span></div></div>`}).join('');
+}
+
+function vPay(){
+ const u=mem(U),m=MONTHS[V.cm],tot=DB.self+(u.kids?K*DB.share:0)+(u.grand?G*shG():0);
+ const inDB=new Set(DB.contribs.map(c=>c.id));
+ const mine=[...DB.contribs.filter(c=>c.m===m&&c.mid===U).map(c=>({kids:c.kids,gk:c.gk||0,amt:c.amt,st:c.st})),
+  ...OUT.filter(o=>o.m===m&&!inDB.has(o.id)).map(o=>({kids:o.kids,gk:o.gk||0,amt:o.amt,st:'sent'}))]
+  .map(c=>`<div class="row"><div><b>${eur(c.amt)}</b><small>${cdesc(c.kids,c.gk)}</small></div><span class="chip ${c.st}">${LBL[c.st]}</span></div>`).join('');
+ let sheet='';
+ if(lastCode)sheet=`<div class="sheet"><b>Message prêt pour le trésorier</b>
+  <div class="note">Envoyez ce code (WhatsApp, SMS…). Il est chiffré.</div>
+  <textarea class="code" id="cd" rows="4" readonly onclick="this.select()">${esc(lastCode)}</textarea>
+  <button class="btn" onclick="act('share')">Envoyer le code</button></div>`;
+ return `<h2>Cotiser</h2>${monthNav('cm')}
+ <div class="line"><span>Moi</span><b>${eur(DB.self)}</b></div>
+ ${u.kids?`<div class="note" style="margin-top:16px">Parts de mes enfants · ${eur(DB.share)} chacune · sans limite</div>
+ <div class="step"><button onclick="act('kids',-1)">−</button><b>${K}</b><button onclick="act('kids',1)">+</button></div>`:''}
+ ${u.grand?`<div class="note" style="margin-top:16px">Parts de mes petits-enfants · ${eur(shG())} chacune · sans limite</div>
+ <div class="step"><button onclick="act('gk',-1)">−</button><b>${G}</b><button onclick="act('gk',1)">+</button></div>`:''}
+ <div class="hero" style="padding:10px 0"><div class="lbl">Total</div><div class="big" style="font-size:54px">${eur(tot)}</div></div>
+ <button class="btn" id="go" onclick="act('pay')">J'ai cotisé</button>${sheet}
+ ${mine?`<div class="lbl" style="margin-top:18px">Mes envois</div>${mine}`:''}`;
+}
+
+function vProj(){
+ const ms=members(),base=ms.length*DB.self,kt=ms.reduce((s,x)=>s+x.kids,0),gt=ms.reduce((s,x)=>s+(x.grand||0),0),full=base+kt*DB.share+gt*shG(),a0=collected()-used();
+ const W=340,H=170,P=8,max=a0+60*full||1;
+ const pt=sl=>[0,12,24,36,48,60].map(i=>`${P+(W-2*P)*i/60},${H-P-(H-2*P)*(a0+i*sl)/max}`).join(' ');
+ let rows='';for(let y=1;y<=5;y++)rows+=`<div class="row"><b>Année ${y}</b><div class="r"><b>${eur(a0+12*y*full)}</b><small>min. ${eur(a0+12*y*base)}</small></div></div>`;
+ return `<h2>Trésorerie · 5 ans</h2>
+ <svg viewBox="0 0 ${W} ${H}" width="100%"><line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="#ddd"/>
+ <polyline fill="none" stroke="#111" stroke-width="3" stroke-linecap="round" points="${pt(full)}"/>
+ <polyline fill="none" stroke="#b5b5b5" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round" points="${pt(base)}"/></svg>
+ <div class="lg"><span><i style="background:#111"></i>Avec enfants et petits-enfants</span><span><i style="background:#b5b5b5"></i>Membres seuls</span></div>
+ <div class="two"><div class="card"><div class="lbl">Par mois · min.</div><div class="mid">${eur(base)}</div></div><div class="card"><div class="lbl">Par mois · complet</div><div class="mid">${eur(full)}</div></div></div>
+ ${rows}<div class="note">Hypothèse : tout le monde cotise chaque mois, aucune dépense. Enfants : ${kt} × ${eur(DB.share)} · petits-enfants : ${gt} × ${eur(shG())}.</div>`;
+}
+
+function vFam(){
+ const ms=allMembers(),on=x=>x.part!==false,kt=ms.reduce((s,x)=>s+x.kids,0),gt=ms.reduce((s,x)=>s+(x.grand||0),0);
+ const pot=x=>DB.self+x.kids*DB.share+(x.grand||0)*shG();
+ const tot=ms.filter(on).reduce((s,x)=>s+pot(x),0),adm=isAdmin();
+ const g=(n,l,c)=>`<div class="gen"><div class="mid">${n}</div><div class="lbl">${l}</div><div class="dots" style="margin-top:6px">${n<=12?dots(n,c):dots(12,c)+'…'}</div></div>`;
+ return `<h2>La famille</h2>
+ <div class="gens">${g(ms.length,'Parents','')}${g(kt,'Enfants','')}${g(gt,'Petits-enfants','h')}</div>
+ <div class="hero" style="padding:10px 0"><div class="lbl">Si tout le monde cotise</div><div class="big" style="font-size:54px">${eur(tot)}</div><div class="note">par mois · ${ms.filter(on).length} membre${ms.filter(on).length>1?'s':''} sur ${ms.length}</div></div>
+ <div class="lg"><span><i style="background:#111;height:10px;width:10px;border-radius:50%"></i>Enfant</span><span><i style="background:#fff;border:2px solid #111;height:10px;width:10px;border-radius:50%"></i>Petit-enfant</span></div>`+
+ ms.map(x=>`<div class="row"><div><b>${esc(x.name)}</b><small>${famTxt(x)}</small>${on(x)?'':'<small>Ne participe pas encore</small>'}<div class="dots" style="margin-top:6px">${dots(x.kids,'')}${dots(x.grand,'h')}</div></div><div class="r">${on(x)?`<b>${eur(pot(x))}</b><small>/ mois</small>`:'<b style="color:var(--no)">—</b>'}${adm?`<br><button class="btn alt sm" style="margin:6px 0 0" onclick="act('fam','${x.id}')">Modifier</button>`:''}</div></div>`).join('')+
+ (adm?`<button class="btn alt" style="margin-top:18px" onclick="act('addm')">+ Ajouter un membre</button>`:'');
+}
+
+function vStory(){
+ const adm=isAdmin();
+ const ev=[...DB.events].sort((a,b)=>b.date.localeCompare(a.date)).map(e=>`<div class="ev"><small>${esc(e.date)}</small><br><b>${esc(e.title)}</b><p>${esc(e.story)}</p><b>${eur(e.amount)} utilisés</b>${adm?` <button class="btn bad sm" onclick="act('delEv','${e.id}')">Suppr.</button>`:''}</div>`).join('');
+ return `<h2>Quand le fonds nous a aidés</h2>
+ ${ev||'<div class="hero"><div style="font-size:48px">🌤️</div><div class="note">Aucun mauvais jour pour l\'instant.</div></div>'}
+ ${adm?`<div class="lbl" style="margin-top:24px">Ajouter un événement</div>
+ <input id="evd" type="date" value="${now.toISOString().slice(0,10)}">
+ <input id="evt" placeholder="Que s'est-il passé ?">
+ <textarea id="evs" rows="3" placeholder="Comment le fonds a aidé"></textarea>
+ <input id="eva" type="number" inputmode="decimal" placeholder="Montant utilisé (€)">
+ <div class="err" id="err"></div><button class="btn" onclick="act('addEv')">Enregistrer</button>`:''}`;
+}
+
+function vValid(){
+ const p=pend().map(c=>{const m=mem(c.mid);return `<div class="row"><div><b>${esc(m?m.name:'?')}</b><small>${ml(c.m)} · ${cdesc(c.kids,c.gk)}</small></div><div class="r"><b>${eur(c.amt)}</b><br><button class="btn bad sm" onclick="act('no','${c.id}')">✕</button><button class="btn sm" onclick="act('yes','${c.id}')">Reçu ✓</button></div></div>`}).join('');
+ const pw=members().map(m=>`<div class="line"><span>${esc(m.name)}</span><button class="btn alt sm" onclick="act('pw','${m.id}')">Mot de passe</button></div>`).join('');
+ return `<h2>À valider</h2>
+ <div class="lbl">Codes reçus des membres</div>
+ <textarea class="code" id="imp" rows="3" placeholder="Collez ici un ou plusieurs codes"></textarea>
+ <button class="btn alt" onclick="act('import')">Importer</button>
+ ${p||'<div class="hero" style="padding:12px 0"><div style="font-size:40px">✅</div><div class="note">Rien en attente.</div></div>'}
+ <div class="lbl" style="margin-top:24px">Publication</div>
+ <div class="note">${dirty()?'Des modifications ne sont pas encore publiées.':'Tout est publié.'} Téléchargez le fichier chiffré et remplacez-le dans le dépôt GitHub.</div>
+ <button class="btn" onclick="publish()">Télécharger le fichier chiffré</button>
+ <div class="lbl" style="margin-top:24px">Réglages</div>
+ <div class="line"><span>Part par enfant</span><button class="btn alt sm" onclick="act('share_')">${eur(DB.share)}</button></div>
+ <div class="line"><span>Part par petit-enfant</span><button class="btn alt sm" onclick="act('shareG')">${eur(shG())}</button></div>
+ <div class="line"><span>Passphrase</span><button class="btn alt sm" onclick="act('pass')">Changer</button></div>
+ ${pw}`;
+}
+
+function render(){
+ let h='';
+ if(mode==='boot')h=vBoot();
+ else if(mode==='setup')h=vSetup();
+ else if(mode==='unlock')h=vUnlock();
+ else if(mode==='pick')h=vPick();
+ else{
+  const m=mem(U),n=pend().length;
+  const T=[['home','🏠','Accueil'],['members','👨‍👩‍👧','Membres'],['fam','🌳','Famille'],['pay','💶','Cotiser'],['proj','📈','5 ans'],['story','📖','Histoires']];
+  if(m.admin)T.push(['valid','✅','Valider']);
+  const body={home:vHome,members:vMembers,fam:vFam,pay:vPay,proj:vProj,story:vStory,valid:vValid}[tab]();
+  h=`<header><b>🛟 Fonds Famille</b><button onclick="location.reload()">${esc(m.name)} · Verrouiller</button></header>${body}
+  <div class="tabs">${T.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="act('tab','${t[0]}')">${t[1]}<small>${t[2]}</small>${t[0]==='valid'&&n?`<span class="badge">${n}</span>`:''}</button>`).join('')}</div>`;
+ }
+ if(toast)h+=`<div class="toast">${esc(toast)}</div>`;
+ document.getElementById('app').innerHTML=h;
+}
+function say(t){toast=t;render();setTimeout(()=>{toast='';render()},2600)}
+async function copy(t){try{await navigator.clipboard.writeText(t);return true}catch(e){const c=document.getElementById('cd');if(c){c.select();try{return document.execCommand('copy')}catch(x){}}return false}}
+
+async function act(a,x,y){
+ if(a==='sel'){sel=x;render();return}
+ if(a==='tab'){tab=x;K=0;G=0;lastCode=null}
+ else if(a==='nav'){V[x]=Math.max(0,Math.min(59,V[x]+y))}
+ else if(a==='kids'){K=Math.max(0,K+x)}
+ else if(a==='gk'){G=Math.max(0,G+x)}
+ else if(a==='pay'){
+  const u=mem(U),o={id:rid(),mid:U,m:MONTHS[V.cm],kids:u.kids?K:0,gk:u.grand?G:0,amt:DB.self+(u.kids?K*DB.share:0)+(u.grand?G*shG():0)};
+  const code='FF1.'+await seal(o);OUT.push(o);lastCode=code;K=0;G=0;
+  if(!DEMO){try{const arr=JSON.parse(localStorage.getItem('ff.out')||'[]');arr.push(code);localStorage.setItem('ff.out',JSON.stringify(arr))}catch(e){}}
+ }
+ else if(a==='share'){
+  if(navigator.share){try{await navigator.share({text:lastCode});return}catch(e){}}
+  say(await copy(lastCode)?'Code copié ✓':'Sélectionnez le code et copiez-le');return}
+ else if(a==='import'){
+  const toks=v('imp').match(/FF1\.[A-Za-z0-9+\/=]+\.[A-Za-z0-9+\/=]+/g)||[];let ok=0,dup=0,bad=0;
+  for(const t of toks){try{const o=await unseal(t.slice(4));
+   if(!o||!mem(o.mid)||!/^20\d\d-\d\d$/.test(o.m)||!(o.amt>=0)||!(o.kids>=0)||!((o.gk||0)>=0)||typeof o.id!=='string'||o.id.length>16){bad++;continue}
+   if(DB.contribs.some(c=>c.id===o.id)){dup++;continue}
+   DB.contribs.push({id:o.id,m:o.m,mid:o.mid,kids:Math.floor(o.kids),gk:Math.floor(o.gk||0),amt:+o.amt,st:'pending'});ok++}catch(e){bad++}}
+  await persist();say(ok?ok+' cotisation'+(ok>1?'s':'')+' importée'+(ok>1?'s':''):(dup?'Déjà importé':'Aucun code valide'));return}
+ else if(a==='yes'){const c=DB.contribs.find(c=>c.id===x);if(c)c.st='ok';await persist();say('Cotisation confirmée ✓');return}
+ else if(a==='no'){DB.contribs=DB.contribs.filter(c=>c.id!==x);await persist()}
+ else if(a==='addEv'){const d=v('evd'),t=v('evt').trim(),s=v('evs').trim(),m=parseFloat(v('eva'));
+  if(!t||isNaN(m)||m<0){setErr('Titre et montant requis');return}
+  if(m>collected()-used()){setErr('Montant supérieur au fonds disponible');return}
+  DB.events.push({id:rid(),date:d,title:t,story:s,amount:m});await persist()}
+ else if(a==='delEv'){if(confirm('Supprimer cet événement ?')){DB.events=DB.events.filter(e=>e.id!==x);await persist()}}
+ else if(a==='share_'){const n=parseFloat(prompt('Valeur de la part par enfant (€)',DB.share));if(n>=0){DB.share=n;await persist()}}
+ else if(a==='shareG'){const n=parseFloat(prompt('Valeur de la part par petit-enfant (€)',shG()));if(n>=0){DB.shareG=n;await persist()}}
+ else if(a==='fam'){const m=mem(x);const k=parseInt(prompt('Nombre d\'enfants de '+m.name,m.kids),10);if(!(k>=0))return;const g=parseInt(prompt('Nombre de petits-enfants de '+m.name,m.grand||0),10);if(!(g>=0))return;
+  const wasOff=m.part===false,on=confirm(m.name+' participe au fonds ?\nOK = oui · Annuler = pas encore');
+  if(!on&&m.admin){say('Le trésorier doit participer');return}
+  if(on&&wasOff){const w=prompt('Mot de passe pour '+m.name+' (4 caractères min.)');if(!w||w.length<4){say('Mot de passe requis');return}m.pw=await mkpw(w)}
+  m.kids=k;m.grand=g;m.part=on;await persist()}
+ else if(a==='addm'){const n=(prompt('Nom du nouveau membre')||'').trim();if(!n)return;
+  const k=parseInt(prompt('Nombre d\'enfants',0),10),g=parseInt(prompt('Nombre de petits-enfants',0),10);if(!(k>=0)||!(g>=0))return;
+  const on=confirm(n+' participe au fonds ?\nOK = oui · Annuler = pas encore');let w=rid()+rid();
+  if(on){w=prompt('Mot de passe pour '+n+' (4 caractères min.)');if(!w||w.length<4){say('Mot de passe requis');return}}
+  DB.members.push({id:'m'+rid(),name:n,kids:k,grand:g,admin:false,part:on,pw:await mkpw(w)});await persist()}
+ else if(a==='pw'){const n=prompt('Nouveau mot de passe pour '+mem(x).name+' (4 caractères min.)');if(n&&n.length>=4){mem(x).pw=await mkpw(n);await persist();say('Mot de passe changé')}}
+ else if(a==='pass'){const n=prompt('Nouvelle passphrase (12 caractères min.)');
+  if(n&&n.length>=12){SALT=crypto.getRandomValues(new Uint8Array(16));KEY=await derive(n,SALT);try{localStorage.removeItem('ff.out')}catch(e){}OUT=[];await persist();say('Passphrase changée — publiez le fichier')}
+  else if(n)say('Trop courte')}
+ render();
+}
+boot();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
